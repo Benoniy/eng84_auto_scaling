@@ -1,2 +1,7 @@
 venv/
 .idea/
+
+using_terraform/.terraform/
+using_terraform/.terraform.tfstate.lock.info
+using_terraform/terraform.tfstate
+using_terraform/terraform.tfstate.backup
