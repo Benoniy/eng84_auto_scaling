@@ -1,4 +1,8 @@
 # Auto Scaling
+## My Highly Available infrastructure:
+![Scaling Image](https://github.com/Benoniy/eng84_auto_scaling/blob/main/images/my_infrastructure.png)  
+
+
 ## Scaling:  
 ![Scaling Image](https://github.com/Benoniy/eng84_auto_scaling/blob/main/images/scaling.png)  
 

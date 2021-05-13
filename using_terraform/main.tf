@@ -225,8 +225,8 @@ resource "aws_launch_template" "launch_template" {
 # Create an auto-scaling group
 resource "aws_autoscaling_group" "auto_scale" {
   name = "eng84_ben_auto_scaling_group"
-  desired_capacity   = 1
-  max_size           = 2
+  desired_capacity   = 2
+  max_size           = 4
   min_size           = 1
 
   lifecycle {
