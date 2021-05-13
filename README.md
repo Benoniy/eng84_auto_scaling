@@ -1,5 +1,5 @@
 # Auto Scaling
-### What is scaling?  
+## Scaling:  
 ![Scaling Image](https://github.com/Benoniy/eng84_auto_scaling/blob/main/images/scaling.png)  
 
 
@@ -10,7 +10,7 @@
 * Horizontal Scaling - The process of increasing the amount of machines to distribute demand across them.  
 
 
-### Load Balancers  
+## Load Balancers:  
 Earlier I said that demand could be distributed among several machines, this is usually achieved by using a load 
 balancer.
 
@@ -31,5 +31,5 @@ balancer.
   depreciated, and amazon discourages the use of it excluding for legacy purposes.  
   
 
-### Route 53
+## Route 53:  
 ![Scaling Image](https://github.com/Benoniy/eng84_auto_scaling/blob/main/images/route53.png)
