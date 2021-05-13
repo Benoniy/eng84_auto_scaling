@@ -3,7 +3,7 @@
 ![Scaling Image](https://github.com/Benoniy/eng84_auto_scaling/blob/main/images/scaling.png)  
 
 
-* Vertical Scaling   - The process of increasing the capability of a single machine in order to fulfill greater 
+* Vertical Scaling - The process of increasing the capability of a single machine in order to fulfill greater 
   demand.  
   
 
@@ -12,7 +12,19 @@
 
 ## Load Balancers:  
 Earlier I said that demand could be distributed among several machines, this is usually achieved by using a load 
-balancer.
+balancer.  
+
+
+The benefits of using a load balancer are:  
+* It allows for quick and convenient scaling  
+* It ensures that the workload is split evenly among servers  
+* It automates the control of traffic  
+
+
+Who is using this in the industry?
+* Everyone uses this, its far too useful to ignore.
+* Video streaming services (Netflix, Amazon, Youtube).
+* Online marketplaces (Apple Store)
 
 
 ![Scaling Image](https://github.com/Benoniy/eng84_auto_scaling/blob/main/images/load_balancers.png)
