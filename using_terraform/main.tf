@@ -94,68 +94,73 @@ resource "aws_route_table_association" "a3" {
 
 
 
-# Create security groups
+# Create security groups, all rules must be separated because of a bug
 resource "aws_security_group" "pub_sec_group" {
   name = var.pub_sec_name
   description = "Public security group"
   vpc_id = aws_vpc.terraform_vpc.id
-
-  ingress {
-    from_port = "80"
-    to_port = "80"
-    protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port = "0"
-    to_port = "0"
-    protocol = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+}
+resource "aws_security_group_rule" "http_access" {
+  type = "ingress"
+  from_port = "80"
+  to_port = "80"
+  protocol = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.pub_sec_group.id
 }
 resource "aws_security_group_rule" "my_ssh" {
-  type              = "ingress"
-  from_port         = 22
-  to_port           = 22
-  protocol          = "tcp"
-  cidr_blocks       = [var.my_ip]
+  type = "ingress"
+  from_port = 22
+  to_port = 22
+  protocol = "tcp"
+  cidr_blocks = [var.my_ip]
   security_group_id = aws_security_group.pub_sec_group.id
 }
 resource "aws_security_group_rule" "vpc_access" {
-  type              = "ingress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = [var.vpc_cidr]
+  type = "ingress"
+  from_port = 0
+  to_port = 0
+  protocol = "-1"
+  cidr_blocks = [var.vpc_cidr]
+  security_group_id = aws_security_group.pub_sec_group.id
+}
+resource "aws_security_group_rule" "outbound_traffic" {
+  type = "egress"
+  from_port = "0"
+  to_port = "0"
+  protocol = "-1"
+  cidr_blocks = ["0.0.0.0/0"]
   security_group_id = aws_security_group.pub_sec_group.id
 }
 
+# Private security
 resource "aws_security_group" "priv_sec_group" {
   name = var.priv_sec_name
   description = "Private security group"
   vpc_id = aws_vpc.terraform_vpc.id
-
-  ingress {
-    from_port         = "22"
-    to_port           = "22"
-    protocol          = "tcp"
-    cidr_blocks       = [var.my_ip]
-  }
-
-  egress {
-    from_port = "0"
-    to_port = "0"
-    protocol = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 }
 resource "aws_security_group_rule" "priv_vpc_access" {
-  type              = "ingress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = [var.vpc_cidr]
+  type = "ingress"
+  from_port = 0
+  to_port = 0
+  protocol = "-1"
+  cidr_blocks = [var.vpc_cidr]
+  security_group_id = aws_security_group.priv_sec_group.id
+}
+resource "aws_security_group_rule" "priv_ssh_access" {
+  type = "ingress"
+  from_port = "22"
+  to_port = "22"
+  protocol = "tcp"
+  cidr_blocks = [var.my_ip]
+  security_group_id = aws_security_group.priv_sec_group.id
+}
+resource "aws_security_group_rule" "priv_vpc_outbound" {
+  type = "egress"
+  from_port = "0"
+  to_port = "0"
+  protocol = "-1"
+  cidr_blocks = ["0.0.0.0/0"]
   security_group_id = aws_security_group.priv_sec_group.id
 }
 
@@ -178,7 +183,6 @@ resource "aws_lb" "load_balancer" {
   load_balancer_type = "application"
   security_groups    = [aws_security_group.pub_sec_group.id]
   subnets            = [aws_subnet.terraform_public_subnet_1.id, aws_subnet.terraform_public_subnet_2.id]
-
   enable_deletion_protection = false
 }
 
@@ -203,7 +207,6 @@ resource "aws_lb_listener" "listener" {
 # Create an AMI template
 resource "aws_launch_template" "launch_template" {
   name = "eng84_ben_terraform_template"
-
   ebs_optimized = false
 
   image_id = var.app_ami
@@ -213,7 +216,6 @@ resource "aws_launch_template" "launch_template" {
     associate_public_ip_address = true
     security_groups = [aws_security_group.pub_sec_group.id]
   }
-  # vpc_security_group_ids = [aws_security_group.pub_sec_group.id]
 
   depends_on = [aws_security_group.pub_sec_group]
 }
@@ -245,7 +247,7 @@ resource "aws_autoscaling_group" "auto_scale" {
 
 
 
-# Launching an EC2 using our app ami
+# Launching an EC2 using our db ami
 # The resource keyword is used to create instances
 # Resource type followed by name
 resource "aws_instance" "terraform_db" {
